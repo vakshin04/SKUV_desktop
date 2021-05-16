@@ -34,10 +34,10 @@ while True:
     left_eye = leye.detectMultiScale(gray) #выполнение обнаружения левого глаза
     right_eye = reye.detectMultiScale(gray) #выполнение обнаружения правого глаза
 
-    cv2.rectangle(frame, (0, height - 50), (200, height), (0, 0, 0), thickness=cv2.FILLED)
+    cv2.rectangle(frame, (0, height - 50), (220, height), (0, 0, 0), thickness=cv2.FILLED)#черная подложка
     #перебираем грани и рисуем граничные серые рамки
     for (x, y, w, h) in faces:
-        cv2.rectangle(frame, (x, y), (x + w, y + h), (100, 100, 100), 1)
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (105, 105, 105), 2)#выделение лица рамкой
 
     for (x, y, w, h) in right_eye:
         r_eye = frame[y:y + h, x:x + w]
@@ -89,15 +89,17 @@ while True:
         score = score + 1
         cv2.putText(frame, "Closed", (5, height - 20), font, 1, (255, 255, 255), 1, cv2.LINE_AA)
     else:#уменьшаем, открыты
-        score = score - 3
+        score = score - 2
         cv2.putText(frame, "Open", (5, height - 20), font, 1, (255, 255, 255), 1, cv2.LINE_AA)
 
     if score < 0:
         score = 0
     if score > 15:
-        #опасная ситуация
         score = 15
-        cv2.imwrite(os.path.join(path, 'image.jpg'), frame)
+    cv2.putText(frame, 'Danger:' + str(score), (90, height - 20), font, 1, (255, 255, 255), 1, cv2.LINE_AA)  # вывод показателей
+    if score == 15:
+        #опасная ситуация
+        cv2.imwrite(os.path.join(path, 'image.jpg'), frame)#сохраняем изображение и рисуем красную рамку
         try:
             sound.play()
         except:  # isplaying = False
@@ -110,10 +112,10 @@ while True:
             if thicc < 2:
                 thicc = 2
         cv2.rectangle(frame, (0, 0), (width, height), (0, 0, 255), thicc)
-    #вписываем рамку в размер окна и отображаем
+    #вписываем рамку в размер окна и отображаем на изображении
     cv2.imshow('frame', frame)
-    cv2.putText(frame, 'Danger:' + str(score), (90, height - 20), font, 1, (255, 255, 255), 1, cv2.LINE_AA)#вывод показателей
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    if cv2.waitKey(1) & 0xFF == ord('0'):#нажимаем 0 для закрытия системы
         break
+# 4 кадра в секунду, скорость - 5 секунд
 cap.release()
 cv2.destroyAllWindows()
