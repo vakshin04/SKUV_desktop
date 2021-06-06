@@ -25,23 +25,20 @@ model = Sequential([
     MaxPooling2D(pool_size=(1, 1)),
     Conv2D(32, (3, 3), activation='relu'),
     MaxPooling2D(pool_size=(1, 1)),
-    # 32 convolution filters used each of size 3x3
-    # again
+    # 32 сверточных фильтра размером 3х3 каждый
     Conv2D(64, (3, 3), activation='relu'),
     MaxPooling2D(pool_size=(1, 1)),
+    # 64 сверточных филтра размером 3х3 каждый
 
-    # 64 convolution filters used each of size 3x3
-    # choose the best features via pooling
-
-    # randomly turn neurons on and off to improve convergence
+    # случайным образом включать и выключать нейроны для улучшения сходимости
     Dropout(0.25),
-    # flatten since too many dimensions, we only want a classification output
+    # сгладить слишком много измерений, нам нужен только вывод классификации
     Flatten(),
-    # fully connected to get all relevant data
+    # полностью подключен для получения всех необходимых данных
     Dense(128, activation='relu'),
-    # one more dropout for convergence' sake :)
+    # еще один выпад ради сведения
     Dropout(0.5),
-    # output a softmax to squash the matrix into output probabilities
+    # вывести softmax, чтобы сжать матрицу до выходных вероятностей
     Dense(2, activation='softmax')
 ])
 
