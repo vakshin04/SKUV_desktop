@@ -86,7 +86,7 @@ while True:
         break
     #Управление счетчиком
     if rpred[0] == 0 and lpred[0] == 0:#увеличиваем, закрыты
-        score = score + 1
+        score = score + 2
         cv2.putText(frame, "Closed", (5, height - 20), font, 1, (255, 255, 255), 1, cv2.LINE_AA)
     else:#уменьшаем, открыты
         score = score - 2
