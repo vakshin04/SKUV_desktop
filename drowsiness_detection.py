@@ -23,14 +23,12 @@ font = cv2.FONT_HERSHEY_COMPLEX_SMALL
 count = 0
 score = 0
 thicc = 2
-n = 0
 rpred = [99]
 lpred = [99]
 #бесконечный цикл для захвата каждого кадра
 while True:
     ret, frame = cap.read()#объект захвата, считываем и сохраняем каждый кадр
     height, width = frame.shape[:2]
-    n = n + 1
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     #переводим в оттенки серого, т.к. OpenCV принимает только серые изображения
     
@@ -106,7 +104,7 @@ while True:
     if score > 15:
         score = 15
     # вывод показаний шкалы опасности
-    cv2.putText(frame, 'Danger:' + str(n), (90, height - 20), font, 1, (255, 255, 255), 1, cv2.LINE_AA)
+    cv2.putText(frame, 'Danger:' + str(score), (90, height - 20), font, 1, (255, 255, 255), 1, cv2.LINE_AA)
     if score == 15:
         #опасная ситуация
         cv2.imwrite(os.path.join(path, 'image.jpg'), frame)#сохраняем изображение и рисуем красную рамку
