@@ -29,6 +29,7 @@ lpred = [99]
 while True:
     ret, frame = cap.read()#объект захвата, считываем и сохраняем каждый кадр
     height, width = frame.shape[:2]
+
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     #переводим в оттенки серого, т.к. OpenCV принимает только серые изображения
     
