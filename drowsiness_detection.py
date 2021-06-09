@@ -7,9 +7,12 @@ import time
 mixer.init()
 sound = mixer.Sound('sound.wav')
 
-face = cv2.CascadeClassifier('haar cascade files\haarcascade_frontalface_alt.xml') #установка классификатора для нахождения лица
-leye = cv2.CascadeClassifier('haar cascade files\haarcascade_lefteye_2splits.xml') #установка классификатора для нахождения левого глаза
-reye = cv2.CascadeClassifier('haar cascade files\haarcascade_righteye_2splits.xml') #установка классификатора для нахождения правого глаза
+face = cv2.CascadeClassifier('haar cascade files\haarcascade_frontalface_alt.xml') 
+#установка классификатора для нахождения лица
+leye = cv2.CascadeClassifier('haar cascade files\haarcascade_lefteye_2splits.xml') 
+#установка классификатора для нахождения левого глаза
+reye = cv2.CascadeClassifier('haar cascade files\haarcascade_righteye_2splits.xml') 
+#установка классификатора для нахождения правого глаза
 
 lbl = ['Closed', 'Open']
 
@@ -22,28 +25,31 @@ score = 0
 thicc = 2
 rpred = [99]
 lpred = [99]
-#бесконечный цикл для захватывания каждого кадра
+#бесконечный цикл для захвата каждого кадра
 while True:
     ret, frame = cap.read()#объект захвата, считываем и сохраняем каждый кадр
     height, width = frame.shape[:2]
 
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)#переводим в оттенки серого, т.к. OpenCV принимает только серые изображения
-
-    faces = face.detectMultiScale(gray, minNeighbors=5, scaleFactor=1.1, minSize=(25, 25)) #выполнение обнаружения лица
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    #переводим в оттенки серого, т.к. OpenCV принимает только серые изображения
+    
+    #выполнение обнаружения лица
+    faces = face.detectMultiScale(gray, minNeighbors=5, scaleFactor=1.1, minSize=(25, 25)) 
     #возвращаетс массив обнаружений с координатами x,y и высотой и шириной границы объекта
     left_eye = leye.detectMultiScale(gray) #выполнение обнаружения левого глаза
     right_eye = reye.detectMultiScale(gray) #выполнение обнаружения правого глаза
-
-    cv2.rectangle(frame, (0, height - 50), (220, height), (0, 0, 0), thickness=cv2.FILLED)#черная подложка
+    
+    #черная подложка для состояния глаз и шкалы опасности
+    cv2.rectangle(frame, (0, height - 50), (220, height), (0, 0, 0), thickness=cv2.FILLED)
     #перебираем грани и рисуем граничные серые рамки
     for (x, y, w, h) in faces:
         cv2.rectangle(frame, (x, y), (x + w, y + h), (105, 105, 105), 2)#выделение лица рамкой
 
     for (x, y, w, h) in right_eye:
         r_eye = frame[y:y + h, x:x + w]
-        # извлекаем только данные правого глаза из полного изображения, выделяем границами прямоугольник глаз
+        # извлекаем данные правого глаза из изображения, выделяем границами прямоугольник глаз
         # выделяем границами прямоугольник глаз и берем нужный кусок
-        # тут только данные изображения глаза, которые мы отправляем с классификатор для определения состояния
+        # тут данные изображения глаза, которые мы отправляем в классификатор для исследования
         count = count + 1
         #конвертируем цветное изображение в оттенки серого
         r_eye = cv2.cvtColor(r_eye, cv2.COLOR_BGR2GRAY)
@@ -64,9 +70,9 @@ while True:
 
     for (x, y, w, h) in left_eye:
         l_eye = frame[y:y + h, x:x + w]
-        #извлекаем только данные левого глаза из полного изображения, выделяем границами прямоугольник глаз
+        #извлекаем данные левого глаза из изображения, выделяем границами прямоугольник глаз
         #выделяем границами прямоугольник глаз и берем нужный кусок
-        #тут только данные изображения глаза, которые мы отправляем с классификатор для определения состояния
+        #тут данные изображения глаза, которые мы отправляем с классификатор для исследования
         count = count + 1
         # конвертируем цветное изображение в оттенки серого
         l_eye = cv2.cvtColor(l_eye, cv2.COLOR_BGR2GRAY)
@@ -91,12 +97,13 @@ while True:
     else:#уменьшаем, открыты
         score = score - 2
         cv2.putText(frame, "Open", (5, height - 20), font, 1, (255, 255, 255), 1, cv2.LINE_AA)
-
+    #удерживаем крайние показатели в границах от 0 до 15
     if score < 0:
         score = 0
     if score > 15:
         score = 15
-    cv2.putText(frame, 'Danger:' + str(score), (90, height - 20), font, 1, (255, 255, 255), 1, cv2.LINE_AA)  # вывод показателей
+    # вывод показаний шкалы опасности
+    cv2.putText(frame, 'Danger:' + str(score), (90, height - 20), font, 1, (255, 255, 255), 1, cv2.LINE_AA)  
     if score == 15:
         #опасная ситуация
         cv2.imwrite(os.path.join(path, 'image.jpg'), frame)#сохраняем изображение и рисуем красную рамку
@@ -116,6 +123,6 @@ while True:
     cv2.imshow('frame', frame)
     if cv2.waitKey(1) & 0xFF == ord('0'):#нажимаем 0 для закрытия системы
         break
-# 4 кадра в секунду, скорость - 5 секунд
+# 4 кадра в секунду, скорость - 5 секунд для десктопной версии
 cap.release()
 cv2.destroyAllWindows()
