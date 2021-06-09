@@ -59,6 +59,7 @@ while True:
         r_eye = r_eye / 255
         #развернем данные для внесения в классификатор
         r_eye = r_eye.reshape(24, 24, -1)
+        #добавляем к массиву новую ось для заполнения состояния глаза
         r_eye = np.expand_dims(r_eye, axis=0)
         #анализируем
         rpred = model.predict_classes(r_eye)
@@ -82,6 +83,7 @@ while True:
         l_eye = l_eye / 255
         # развернем данные для внесения в классификатор
         l_eye = l_eye.reshape(24, 24, -1)
+        #добавляем к массиву новую ось для заполнения состояния глаза
         l_eye = np.expand_dims(l_eye, axis=0)
         # анализируем
         lpred = model.predict_classes(l_eye)
