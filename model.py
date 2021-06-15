@@ -8,7 +8,6 @@ def generator(dir, gen=image.ImageDataGenerator(rescale=1. / 255), shuffle=True,
     return gen.flow_from_directory(dir, batch_size=batch_size, shuffle=shuffle, color_mode='grayscale',
                                    class_mode=class_mode, target_size=target_size)
 
-
 BS = 32
 TS = (24, 24)
 train_batch = generator('data/train', shuffle=True, batch_size=BS, target_size=TS)
@@ -17,19 +16,15 @@ SPE = len(train_batch.classes) // BS
 VS = len(valid_batch.classes) // BS
 print(SPE, VS)
 
-# img,labels= next(train_batch)
-# print(img.shape)
-
 model = Sequential([
     Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=(24, 24, 1)),
     MaxPooling2D(pool_size=(1, 1)),
     Conv2D(32, (3, 3), activation='relu'),
     MaxPooling2D(pool_size=(1, 1)),
-    # 32 сверточных фильтра размером 3х3 каждый
+    # 32 узла, ядро размером 3х3
     Conv2D(64, (3, 3), activation='relu'),
     MaxPooling2D(pool_size=(1, 1)),
-    # 64 сверточных фильтра размером 3х3 каждый
-
+    # 64 узла, ядро размером 3х3
     # случайным образом включать и выключать нейроны для улучшения сходимости
     Dropout(0.25),
     # сгладить слишком много измерений, нам нужен только вывод классификации
